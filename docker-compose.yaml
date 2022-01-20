@@ -1,0 +1,23 @@
+services:
+  mysql:
+    image: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=movies_db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=strong_password
+      - MYSQL_ROOT_PASSWORD=stronger_password
+    volumes:
+      - test-volume1:/var/lib/mysql
+ 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 9999:8080
+    depends_on:
+    - mysql
+ 
+volumes:
+  test-volume1:
