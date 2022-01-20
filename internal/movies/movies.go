@@ -18,7 +18,7 @@ type Movie struct {
 }
 
 func (movie Movie) Save() int64 {
-	statement, err := database.Db.Prepare("INSERT INTO Movies(Title, Genre, ImgURL, Description, ReleaseDate, Length, Likes, Comments) VALUES(?, ?, ?, ?, ?, ?, ?)")
+	statement, err := database.Db.Prepare("INSERT INTO Movies(Title, Genre, ImgURL, Description, ReleaseDate, Length, Likes, Comments) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
