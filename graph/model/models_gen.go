@@ -34,9 +34,21 @@ type RefreshTokenInput struct {
 	Token string `json:"token"`
 }
 
+type Review struct {
+	ID     string `json:"id"`
+	Review string `json:"review"`
+	Date   string `json:"date"`
+	User   *User  `json:"user"`
+}
+
+type ReviewInput struct {
+	Review string `json:"review"`
+	Date   string `json:"date"`
+}
+
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID       string `json:"id"`
+	Username string `json:"username"`
 }
 
 type UserInput struct {

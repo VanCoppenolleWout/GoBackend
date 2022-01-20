@@ -8,12 +8,18 @@ type Movie {
   length: String!
   likes: Int!
   comments: Int!
-
 }
 
 type User {
   id: ID!
-  name: String!
+  username: String!
+}
+
+type Review {
+  id: ID!
+  review: String!
+  date: String!
+  user: User!
 }
 
 input MovieInput {
@@ -25,6 +31,11 @@ input MovieInput {
   length: String!
   likes: Int!
   comments: Int!
+}
+
+input ReviewInput {
+  review: String!
+  date: String!
 }
 
 input RefreshTokenInput {
@@ -43,7 +54,8 @@ input Login {
 
 type Mutation {
   createMovie(input: MovieInput!): Movie!
-  createuser(input: UserInput!): String!
+  createUser(input: UserInput!): String!
+  createReview(input: ReviewInput!): Review!
   login(input: Login!): String!
 }
 

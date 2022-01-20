@@ -27,7 +27,11 @@ func (r *mutationResolver) CreateMovie(ctx context.Context, input model.MovieInp
 	return &model.Movie{ID: strconv.FormatInt(movieId, 10), Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgURL, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments}, nil
 }
 
-func (r *mutationResolver) Createuser(ctx context.Context, input model.UserInput) (string, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) CreateReview(ctx context.Context, input model.ReviewInput) (*model.Review, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -40,7 +44,7 @@ func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
 	movies = append(movies, &model.Movie{
 		Title:       "The conjuring",
 		Genre:       "horror",
-		ImgURL: "",
+		ImgURL:      "",
 		Description: "super duper movie",
 		ReleaseDate: 2020,
 		Length:      "String",
@@ -58,3 +62,13 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *mutationResolver) Createuser(ctx context.Context, input model.UserInput) (string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
