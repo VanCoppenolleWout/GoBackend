@@ -1,0 +1,52 @@
+type Movie {
+  id: ID!
+  title: String!
+  genre: String!
+  imgURL: String!
+  description: String!
+  releaseDate: Int!
+  length: String!
+  likes: Int!
+  comments: Int!
+
+}
+
+type User {
+  id: ID!
+  name: String!
+}
+
+input MovieInput {
+  title: String!
+  genre: String!
+  imgURL: String!
+  description: String!
+  releaseDate: Int!
+  length: String!
+  likes: Int!
+  comments: Int!
+}
+
+input RefreshTokenInput {
+  token: String!
+}
+
+input UserInput {
+  username: String!
+  password: String!
+}
+
+input Login {
+  username: String!
+  password: String!
+}
+
+type Mutation {
+  createMovie(input: MovieInput!): Movie!
+  createuser(input: UserInput!): String!
+  login(input: Login!): String!
+}
+
+type Query {
+  movies: [Movie!]!
+}
