@@ -9,6 +9,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/VanCoppenolleWout/GoBackend/graph"
 	"github.com/VanCoppenolleWout/GoBackend/graph/generated"
+	_ "github.com/go-sql-driver/mysql"
+	database "github.com/VanCoppenolleWout/GoBackend/internal/pkg/db/mysql"
 )
 
 const defaultPort = "8080"
@@ -18,6 +20,9 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
+
+	database.InitDB()
+	database.Migrate()
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 

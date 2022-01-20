@@ -6,13 +6,25 @@ package graph
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/VanCoppenolleWout/GoBackend/graph/generated"
 	"github.com/VanCoppenolleWout/GoBackend/graph/model"
+	"github.com/VanCoppenolleWout/GoBackend/internal/movies"
 )
 
 func (r *mutationResolver) CreateMovie(ctx context.Context, input model.MovieInput) (*model.Movie, error) {
-	panic(fmt.Errorf("not implemented"))
+	var movie movies.Movie
+	movie.Title = input.Title
+	movie.Genre = input.Genre
+	movie.ImgURL = input.ImgURL
+	movie.Description = input.Description
+	movie.ReleaseDate = input.ReleaseDate
+	movie.Length = input.Length
+	movie.Likes = input.Likes
+	movie.Comments = input.Comments
+	movieId := movie.Save()
+	return &model.Movie{ID: strconv.FormatInt(movieId, 10), Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgURL, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments}, nil
 }
 
 func (r *mutationResolver) Createuser(ctx context.Context, input model.UserInput) (string, error) {
@@ -24,7 +36,18 @@ func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string
 }
 
 func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
-	panic(fmt.Errorf("not implemented"))
+	var movies []*model.Movie
+	movies = append(movies, &model.Movie{
+		Title:       "The conjuring",
+		Genre:       "horror",
+		ImgURL: "",
+		Description: "super duper movie",
+		ReleaseDate: 2020,
+		Length:      "String",
+		Likes:       50,
+		Comments:    30,
+	})
+	return movies, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
