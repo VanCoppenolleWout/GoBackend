@@ -1,8 +1,9 @@
 package movies
 
 import (
-	database "github.com/VanCoppenolleWout/GoBackend/internal/pkg/db/mysql"
 	"log"
+
+	database "github.com/VanCoppenolleWout/GoBackend/internal/pkg/db/mysql"
 )
 
 type Movie struct {
@@ -33,6 +34,32 @@ func (movie Movie) Save() int64 {
 		log.Fatal("Error: ", err.Error())
 	}
 	log.Print("Row inserted")
-	
+
 	return id
+}
+
+func GetAll() []Movie {
+	statement, err := database.Db.Prepare("SELECT * FROM Movies")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer statement.Close()
+	rows, err := statement.Query()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	var movies []Movie
+	for rows.Next() {
+		var movie Movie
+		err := rows.Scan(&movie.ID, &movie.Title, &movie.Description, &movie.Genre, &movie.ImgURL, &movie.ReleaseDate, &movie.ReleaseDate, &movie.Length, &movie.Likes, &movie.Comments)
+		if err != nil {
+			log.Fatal(err)
+		}
+		movies = append(movies, movie)
+	}
+	if err = rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return movies
 }
