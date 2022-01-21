@@ -32,7 +32,15 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 }
 
 func (r *mutationResolver) CreateReview(ctx context.Context, input model.ReviewInput) (*model.Review, error) {
-	panic(fmt.Errorf("not implemented"))
+	var review *model.Review
+	var user model.User
+	review.Review = input.Review
+	review.Date = "20/01/2022"
+	review.Likes = input.Likes
+	review.Comments = input.Comments
+	user.Username = "admin"
+	review.User = &user
+	return review, nil
 }
 
 func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
@@ -52,6 +60,10 @@ func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
 		Comments:    30,
 	})
 	return movies, nil
+}
+
+func (r *queryResolver) Reviews(ctx context.Context) ([]*model.Review, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

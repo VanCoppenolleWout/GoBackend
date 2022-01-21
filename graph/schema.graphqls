@@ -19,6 +19,8 @@ type Review {
   id: ID!
   review: String!
   date: String!
+  likes: String!
+  comments: String!
   user: User!
 }
 
@@ -36,6 +38,8 @@ input MovieInput {
 input ReviewInput {
   review: String!
   date: String!
+  likes: String!
+  comments: String!
 }
 
 input RefreshTokenInput {
@@ -61,4 +65,5 @@ type Mutation {
 
 type Query {
   movies: [Movie!]!
+  reviews: [Review!]!
 }
