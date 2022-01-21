@@ -72,7 +72,12 @@ func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
 }
 
 func (r *queryResolver) Reviews(ctx context.Context) ([]*model.Review, error) {
-	panic(fmt.Errorf("not implemented"))
+	var resultReviews []*model.Review
+	var dbReviews []reviews.Review = reviews.GetAll()
+	for _, review := range dbReviews {
+		resultReviews = append(resultReviews, &model.Review{ID: review.ID, Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments})
+	}
+	return resultReviews, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

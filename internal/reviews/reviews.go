@@ -1,18 +1,19 @@
 package reviews
 
 import (
+	"log"
+
 	database "github.com/VanCoppenolleWout/GoBackend/internal/pkg/db/mysql"
 	"github.com/VanCoppenolleWout/GoBackend/internal/users"
-	"log"
 )
 
 type Review struct {
-	ID       string `json:"id"`
-	Review   string `json:"review"`
-	Date     string `json:"date"`
-	Likes    string `json:"likes"`
-	Comments string `json:"comments"`
-	User     *users.User  `json:"user"`
+	ID       string      `json:"id"`
+	Review   string      `json:"review"`
+	Date     string      `json:"date"`
+	Likes    string      `json:"likes"`
+	Comments string      `json:"comments"`
+	User     *users.User `json:"user"`
 }
 
 func (review Review) Save() int64 {
@@ -31,6 +32,32 @@ func (review Review) Save() int64 {
 		log.Fatal("Error: ", err.Error())
 	}
 	log.Print("Row inserted")
-	
+
 	return id
+}
+
+func GetAll() []Review {
+	statement, err := database.Db.Prepare("SELECT id, review, date, likes, comments FROM Reviews")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer statement.Close()
+	rows, err := statement.Query()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	var reviews []Review
+	for rows.Next() {
+		var review Review
+		err := rows.Scan(&review.ID, &review.Review, &review.Date, &review.Likes, &review.Comments)
+		if err != nil {
+			log.Fatal(err)
+		}
+		reviews = append(reviews, review)
+	}
+	if err = rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return reviews
 }
