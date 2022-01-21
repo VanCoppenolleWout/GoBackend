@@ -52,7 +52,7 @@ func GetAll() []Movie {
 	var movies []Movie
 	for rows.Next() {
 		var movie Movie
-		err := rows.Scan(&movie.ID, &movie.Title, &movie.Description, &movie.Genre, &movie.ImgURL, &movie.ReleaseDate, &movie.ReleaseDate, &movie.Length, &movie.Likes, &movie.Comments)
+		err := rows.Scan(&movie.ID, &movie.Title, &movie.Description, &movie.Genre, &movie.ImgURL, &movie.ReleaseDate, &movie.Length, &movie.Likes, &movie.Comments)
 		if err != nil {
 			log.Fatal(err)
 		}

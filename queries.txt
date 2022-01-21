@@ -1,0 +1,32 @@
+// insert movie
+
+mutation {
+  createMovie(
+    input: {title: "The conjuring 2", genre: "Horror", imgURL: "", description: "random description", releaseDate: 10, length: "2h 20m", likes: 0, comments: 0}
+  ) {
+    title
+    genre
+    imgURL
+    description
+    releaseDate
+    length
+    likes
+    comments
+  }
+}
+
+// get all movies
+
+{
+  movies {
+    id
+    title
+    genre
+    imgURL
+    description
+    releaseDate
+    length
+    likes
+    comments
+  }
+}
