@@ -11,8 +11,8 @@ type Review struct {
 	ID       string      `json:"id"`
 	Review   string      `json:"review"`
 	Date     string      `json:"date"`
-	Likes    string      `json:"likes"`
-	Comments string      `json:"comments"`
+	Likes    int      `json:"likes"`
+	Comments int      `json:"comments"`
 	User     *users.User `json:"user"`
 }
 

@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-chi/chi"
+	"github.com/VanCoppenolleWout/GoBackend/internal/auth"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/VanCoppenolleWout/GoBackend/graph"
@@ -21,6 +24,9 @@ func main() {
 		port = defaultPort
 	}
 
+	router := chi.NewRouter()
+	router.Use(auth.Middleware())
+
 	database.InitDB()
 	database.Migrate()
 
@@ -30,5 +36,5 @@ func main() {
 	http.Handle("/query", srv)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }

@@ -30,3 +30,28 @@ mutation {
     comments
   }
 }
+
+// insert review
+
+mutation {
+  createReview(
+    input: {review: "The conjuring 2", date: "2022-01-21 13:30:00", likes: 0, comments: 0}
+  ) {
+    review
+    date
+    likes
+    comments
+  }
+}
+
+// get all reviews
+
+{
+  reviews {
+    id
+    review
+    date
+    likes
+    comments
+  }
+}

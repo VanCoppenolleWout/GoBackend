@@ -374,8 +374,8 @@ type Review {
   id: ID!
   review: String!
   date: String!
-  likes: String!
-  comments: String!
+  likes: Int!
+  comments: Int!
   user: User!
 }
 
@@ -393,8 +393,8 @@ input MovieInput {
 input ReviewInput {
   review: String!
   date: String!
-  likes: String!
-  comments: String!
+  likes: Int!
+  comments: Int!
 }
 
 input RefreshTokenInput {
@@ -1302,9 +1302,9 @@ func (ec *executionContext) _Review_likes(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Review_comments(ctx context.Context, field graphql.CollectedField, obj *model.Review) (ret graphql.Marshaler) {
@@ -1337,9 +1337,9 @@ func (ec *executionContext) _Review_comments(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Review_user(ctx context.Context, field graphql.CollectedField, obj *model.Review) (ret graphql.Marshaler) {
@@ -2731,7 +2731,7 @@ func (ec *executionContext) unmarshalInputReviewInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("likes"))
-			it.Likes, err = ec.unmarshalNString2string(ctx, v)
+			it.Likes, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2739,7 +2739,7 @@ func (ec *executionContext) unmarshalInputReviewInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comments"))
-			it.Comments, err = ec.unmarshalNString2string(ctx, v)
+			it.Comments, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}

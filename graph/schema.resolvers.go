@@ -36,7 +36,7 @@ func (r *mutationResolver) CreateReview(ctx context.Context, input model.ReviewI
 	var review reviews.Review
 	//var user model.User
 	review.Review = input.Review
-	review.Date = "20/01/2022"
+	review.Date = input.Date
 	review.Likes = input.Likes
 	review.Comments = input.Comments
 	//user.Username = "admin"

@@ -38,16 +38,16 @@ type Review struct {
 	ID       string `json:"id"`
 	Review   string `json:"review"`
 	Date     string `json:"date"`
-	Likes    string `json:"likes"`
-	Comments string `json:"comments"`
+	Likes    int    `json:"likes"`
+	Comments int    `json:"comments"`
 	User     *User  `json:"user"`
 }
 
 type ReviewInput struct {
 	Review   string `json:"review"`
 	Date     string `json:"date"`
-	Likes    string `json:"likes"`
-	Comments string `json:"comments"`
+	Likes    int    `json:"likes"`
+	Comments int    `json:"comments"`
 }
 
 type User struct {

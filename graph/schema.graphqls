@@ -19,8 +19,8 @@ type Review {
   id: ID!
   review: String!
   date: String!
-  likes: String!
-  comments: String!
+  likes: Int!
+  comments: Int!
   user: User!
 }
 
@@ -38,8 +38,8 @@ input MovieInput {
 input ReviewInput {
   review: String!
   date: String!
-  likes: String!
-  comments: String!
+  likes: Int!
+  comments: Int!
 }
 
 input RefreshTokenInput {
