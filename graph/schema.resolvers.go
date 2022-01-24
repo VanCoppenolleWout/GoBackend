@@ -11,7 +11,9 @@ import (
 	"github.com/VanCoppenolleWout/GoBackend/graph/generated"
 	"github.com/VanCoppenolleWout/GoBackend/graph/model"
 	"github.com/VanCoppenolleWout/GoBackend/internal/movies"
+	"github.com/VanCoppenolleWout/GoBackend/internal/pkg/jwt"
 	"github.com/VanCoppenolleWout/GoBackend/internal/reviews"
+	"github.com/VanCoppenolleWout/GoBackend/internal/users"
 )
 
 func (r *mutationResolver) CreateMovie(ctx context.Context, input model.MovieInput) (*model.Movie, error) {
@@ -29,7 +31,15 @@ func (r *mutationResolver) CreateMovie(ctx context.Context, input model.MovieInp
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+    var user users.User
+	user.Username = input.Username
+	user.Password = input.Password
+	user.Create()
+	token, err := jwt.GenerateToken(user.Username)
+	if err != nil{
+		return "", err
+	}
+	return token, nil
 }
 
 func (r *mutationResolver) CreateReview(ctx context.Context, input model.ReviewInput) (*model.Review, error) {
