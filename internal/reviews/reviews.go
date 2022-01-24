@@ -17,12 +17,12 @@ type Review struct {
 }
 
 func (review Review) Save() int64 {
-	statement, err := database.Db.Prepare("INSERT INTO Reviews(Review, Date, Likes, Comments) VALUES(?, ?, ?, ?)")
+	statement, err := database.Db.Prepare("INSERT INTO Reviews(Review, Date, Likes, Comments, UserID) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	res, err := statement.Exec(review.Review, review.Date, review.Likes, review.Comments)
+	res, err := statement.Exec(review.Review, review.Date, review.Likes, review.Comments, review.User.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,7 +37,7 @@ func (review Review) Save() int64 {
 }
 
 func GetAll() []Review {
-	statement, err := database.Db.Prepare("SELECT id, review, date, likes, comments FROM Reviews")
+	statement, err := database.Db.Prepare("SELECT L.id, L.review, L.date, L.likes, U.comments, L.UserId from Reviews L inner join Users U on L.UserID = U.ID")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,11 +48,17 @@ func GetAll() []Review {
 	}
 	defer rows.Close()
 	var reviews []Review
+	var username string
+	var id string
 	for rows.Next() {
 		var review Review
-		err := rows.Scan(&review.ID, &review.Review, &review.Date, &review.Likes, &review.Comments)
+		err := rows.Scan(&review.ID, &review.Review, &review.Date, &review.Likes, &review.Comments, &id, &username)
 		if err != nil {
 			log.Fatal(err)
+		}
+		review.User = &users.User{
+			ID:       id,
+            Username: username,
 		}
 		reviews = append(reviews, review)
 	}

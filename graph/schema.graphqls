@@ -61,6 +61,7 @@ type Mutation {
   createUser(input: UserInput!): String!
   createReview(input: ReviewInput!): Review!
   login(input: Login!): String!
+  RefreshToken(input: RefreshTokenInput!): String!
 }
 
 type Query {

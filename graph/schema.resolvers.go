@@ -10,6 +10,7 @@ import (
 
 	"github.com/VanCoppenolleWout/GoBackend/graph/generated"
 	"github.com/VanCoppenolleWout/GoBackend/graph/model"
+	"github.com/VanCoppenolleWout/GoBackend/internal/auth"
 	"github.com/VanCoppenolleWout/GoBackend/internal/movies"
 	"github.com/VanCoppenolleWout/GoBackend/internal/pkg/jwt"
 	"github.com/VanCoppenolleWout/GoBackend/internal/reviews"
@@ -31,12 +32,12 @@ func (r *mutationResolver) CreateMovie(ctx context.Context, input model.MovieInp
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (string, error) {
-    var user users.User
+	var user users.User
 	user.Username = input.Username
 	user.Password = input.Password
 	user.Create()
 	token, err := jwt.GenerateToken(user.Username)
-	if err != nil{
+	if err != nil {
 		return "", err
 	}
 	return token, nil
@@ -44,19 +45,50 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 
 func (r *mutationResolver) CreateReview(ctx context.Context, input model.ReviewInput) (*model.Review, error) {
 	var review reviews.Review
-	//var user model.User
 	review.Review = input.Review
 	review.Date = input.Date
 	review.Likes = input.Likes
 	review.Comments = input.Comments
-	//user.Username = "admin"
-	//review.User = &user
+
+	user := auth.ForContext(ctx)
+	if user == nil {
+		return &model.Review{}, fmt.Errorf("acces denied")
+	}
+
+	review.User = user
 	reviewId := review.Save()
-	return &model.Review{ID: strconv.FormatInt(reviewId, 10), Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments}, nil
+	graphqlUser := &model.User{
+		ID: user.ID,
+		Username: user.Username,
+	}
+	return &model.Review{ID: strconv.FormatInt(reviewId, 10), Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments, User: graphqlUser}, nil
 }
 
 func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	var user users.User
+	user.Username = input.Username
+	user.Password = input.Password
+	correct := user.Authenticate()
+	if !correct {
+		return "", &users.WrongUsernameOrPasswordError{}
+	}
+	token, err := jwt.GenerateToken(user.Username)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+}
+
+func (r *mutationResolver) RefreshToken(ctx context.Context, input model.RefreshTokenInput) (string, error) {
+	username, err := jwt.ParseToken(input.Token)
+	if err != nil {
+		return "", fmt.Errorf("access denied")
+	}
+	token, err := jwt.GenerateToken(username)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }
 
 func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
@@ -85,7 +117,11 @@ func (r *queryResolver) Reviews(ctx context.Context) ([]*model.Review, error) {
 	var resultReviews []*model.Review
 	var dbReviews []reviews.Review = reviews.GetAll()
 	for _, review := range dbReviews {
-		resultReviews = append(resultReviews, &model.Review{ID: review.ID, Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments})
+		graphqlUser := &model.User{
+			ID: review.User.ID,
+			Username: review.User.Username,
+		}
+		resultReviews = append(resultReviews, &model.Review{ID: review.ID, Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments, User: graphqlUser})
 	}
 	return resultReviews, nil
 }
