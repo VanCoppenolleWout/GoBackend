@@ -37,7 +37,7 @@ func (review Review) Save() int64 {
 }
 
 func GetAll() []Review {
-	statement, err := database.Db.Prepare("SELECT L.id, L.review, L.date, L.likes, U.comments, L.UserId from Reviews L inner join Users U on L.UserID = U.ID")
+	statement, err := database.Db.Prepare("SELECT L.id, L.review, L.date, L.likes, L.comments, L.UserId, U.Username from Reviews L inner join Users U on L.UserID = U.ID")
 	if err != nil {
 		log.Fatal(err)
 	}
