@@ -11,7 +11,7 @@ import (
 var Db *sql.DB
 
 func InitDB() {
-	db, err := sql.Open("mysql", "user:strong_password@tcp(localhost)/movies_db")
+	db, err := sql.Open("mysql", "user:strong_password@tcp(mysql)/movies_db")
 	if err != nil {
 		log.Panic(err)
 	}
