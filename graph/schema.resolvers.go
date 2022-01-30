@@ -21,14 +21,14 @@ func (r *mutationResolver) CreateMovie(ctx context.Context, input model.MovieInp
 	var movie movies.Movie
 	movie.Title = input.Title
 	movie.Genre = input.Genre
-	movie.ImgURL = input.ImgURL
+	movie.ImgUrl = input.ImgURL
 	movie.Description = input.Description
 	movie.ReleaseDate = input.ReleaseDate
 	movie.Length = input.Length
 	movie.Likes = input.Likes
 	movie.Comments = input.Comments
 	movieId := movie.Save()
-	return &model.Movie{ID: strconv.FormatInt(movieId, 10), Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgURL, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments}, nil
+	return &model.Movie{ID: strconv.FormatInt(movieId, 10), Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments}, nil
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (string, error) {
@@ -58,7 +58,7 @@ func (r *mutationResolver) CreateReview(ctx context.Context, input model.ReviewI
 	review.User = user
 	reviewId := review.Save()
 	graphqlUser := &model.User{
-		ID: user.ID,
+		ID:       user.ID,
 		Username: user.Username,
 	}
 	return &model.Review{ID: strconv.FormatInt(reviewId, 10), Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments, User: graphqlUser}, nil
@@ -108,7 +108,7 @@ func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
 	//var dbMovies []movies.Movie
 	var dbMovies []movies.Movie = movies.GetAll()
 	for _, movie := range dbMovies {
-		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgURL, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
+		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
 	}
 	return resultMovies, nil
 }
@@ -118,7 +118,7 @@ func (r *queryResolver) Reviews(ctx context.Context) ([]*model.Review, error) {
 	var dbReviews []reviews.Review = reviews.GetAll()
 	for _, review := range dbReviews {
 		graphqlUser := &model.User{
-			ID: review.User.ID,
+			ID:       review.User.ID,
 			Username: review.User.Username,
 		}
 		resultReviews = append(resultReviews, &model.Review{ID: review.ID, Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments, User: graphqlUser})

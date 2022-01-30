@@ -2,7 +2,7 @@ type Movie {
   id: ID!
   title: String!
   genre: String!
-  imgURL: String!
+  imgUrl: String!
   description: String!
   releaseDate: Int!
   length: String!
@@ -27,7 +27,7 @@ type Review {
 input MovieInput {
   title: String!
   genre: String!
-  imgURL: String!
+  imgUrl: String!
   description: String!
   releaseDate: Int!
   length: String!

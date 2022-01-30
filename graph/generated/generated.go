@@ -138,7 +138,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Movie.ID(childComplexity), true
 
-	case "Movie.imgURL":
+	case "Movie.imgUrl":
 		if e.complexity.Movie.ImgURL == nil {
 			break
 		}
@@ -371,7 +371,7 @@ var sources = []*ast.Source{
   id: ID!
   title: String!
   genre: String!
-  imgURL: String!
+  imgUrl: String!
   description: String!
   releaseDate: Int!
   length: String!
@@ -396,7 +396,7 @@ type Review {
 input MovieInput {
   title: String!
   genre: String!
-  imgURL: String!
+  imgUrl: String!
   description: String!
   releaseDate: Int!
   length: String!
@@ -678,7 +678,7 @@ func (ec *executionContext) _Movie_genre(ctx context.Context, field graphql.Coll
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Movie_imgURL(ctx context.Context, field graphql.CollectedField, obj *model.Movie) (ret graphql.Marshaler) {
+func (ec *executionContext) _Movie_imgUrl(ctx context.Context, field graphql.CollectedField, obj *model.Movie) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2697,10 +2697,10 @@ func (ec *executionContext) unmarshalInputMovieInput(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
-		case "imgURL":
+		case "imgUrl":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("imgURL"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("imgUrl"))
 			it.ImgURL, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -2900,9 +2900,9 @@ func (ec *executionContext) _Movie(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "imgURL":
+		case "imgUrl":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Movie_imgURL(ctx, field, obj)
+				return ec._Movie_imgUrl(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

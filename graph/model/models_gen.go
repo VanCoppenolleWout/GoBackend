@@ -11,7 +11,7 @@ type Movie struct {
 	ID          string `json:"id"`
 	Title       string `json:"title"`
 	Genre       string `json:"genre"`
-	ImgURL      string `json:"imgURL"`
+	ImgURL      string `json:"imgUrl"`
 	Description string `json:"description"`
 	ReleaseDate int    `json:"releaseDate"`
 	Length      string `json:"length"`
@@ -22,7 +22,7 @@ type Movie struct {
 type MovieInput struct {
 	Title       string `json:"title"`
 	Genre       string `json:"genre"`
-	ImgURL      string `json:"imgURL"`
+	ImgURL      string `json:"imgUrl"`
 	Description string `json:"description"`
 	ReleaseDate int    `json:"releaseDate"`
 	Length      string `json:"length"`

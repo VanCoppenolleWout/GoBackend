@@ -10,7 +10,7 @@ type Movie struct {
 	ID          string `json:"id"`
 	Title       string `json:"title"`
 	Genre       string `json:"genre"`
-	ImgURL      string `json:"imgURL"`
+	ImgUrl      string `json:"imgUrl"`
 	Description string `json:"description"`
 	ReleaseDate int    `json:"releaseDate"`
 	Length      string `json:"length"`
@@ -19,12 +19,12 @@ type Movie struct {
 }
 
 func (movie Movie) Save() int64 {
-	statement, err := database.Db.Prepare("INSERT INTO Movies(Title, Genre, ImgURL, Description, ReleaseDate, Length, Likes, Comments) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
+	statement, err := database.Db.Prepare("INSERT INTO Movies(Title, Genre, ImgUrl, Description, ReleaseDate, Length, Likes, Comments) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	res, err := statement.Exec(movie.Title, movie.Genre, movie.ImgURL, movie.Description, movie.ReleaseDate, movie.Length, movie.Likes, movie.Comments)
+	res, err := statement.Exec(movie.Title, movie.Genre, movie.ImgUrl, movie.Description, movie.ReleaseDate, movie.Length, movie.Likes, movie.Comments)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,7 +52,7 @@ func GetAll() []Movie {
 	var movies []Movie
 	for rows.Next() {
 		var movie Movie
-		err := rows.Scan(&movie.ID, &movie.Title, &movie.Description, &movie.Genre, &movie.ImgURL, &movie.ReleaseDate, &movie.Length, &movie.Likes, &movie.Comments)
+		err := rows.Scan(&movie.ID, &movie.Title, &movie.Description, &movie.Genre, &movie.ImgUrl, &movie.ReleaseDate, &movie.Length, &movie.Likes, &movie.Comments)
 		if err != nil {
 			log.Fatal(err)
 		}
