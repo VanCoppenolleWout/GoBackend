@@ -92,18 +92,6 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input model.Refresh
 }
 
 func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
-	// var movies []*model.Movie
-	// movies = append(movies, &model.Movie{
-	// 	Title:       "The conjuring",
-	// 	Genre:       "horror",
-	// 	ImgURL:      "",
-	// 	Description: "super duper movie",
-	// 	ReleaseDate: 2020,
-	// 	Length:      "String",
-	// 	Likes:       50,
-	// 	Comments:    30,
-	// })
-	// return movies, nil
 	var resultMovies []*model.Movie
 	//var dbMovies []movies.Movie
 	var dbMovies []movies.Movie = movies.GetAll()
@@ -124,6 +112,16 @@ func (r *queryResolver) Reviews(ctx context.Context) ([]*model.Review, error) {
 		resultReviews = append(resultReviews, &model.Review{ID: review.ID, Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments, User: graphqlUser})
 	}
 	return resultReviews, nil
+}
+
+func (r *queryResolver) MovieByID(ctx context.Context, id *string) ([]*model.Movie, error) {
+	var resultMovies []*model.Movie
+	//var dbMovies []movies.Movie
+	var dbMovies []movies.Movie = movies.GetMovieById(id)
+	for _, movie := range dbMovies {
+		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
+	}
+	return resultMovies, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

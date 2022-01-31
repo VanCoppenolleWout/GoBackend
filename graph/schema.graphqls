@@ -67,4 +67,5 @@ type Mutation {
 type Query {
   movies: [Movie!]!
   reviews: [Review!]!
+  movieById(id: ID): [Movie!]
 }
