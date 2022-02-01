@@ -69,4 +69,5 @@ type Query {
   reviews: [Review!]!
   movieById(id: ID): [Movie!]
   movieByGenre(genre: String): [Movie!]
+  movieByYear(releaseDate: Int): [Movie!]
 }

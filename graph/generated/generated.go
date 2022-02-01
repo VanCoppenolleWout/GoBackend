@@ -66,6 +66,7 @@ type ComplexityRoot struct {
 	Query struct {
 		MovieByGenre func(childComplexity int, genre *string) int
 		MovieByID    func(childComplexity int, id *string) int
+		MovieByYear  func(childComplexity int, releaseDate *int) int
 		Movies       func(childComplexity int) int
 		Reviews      func(childComplexity int) int
 	}
@@ -97,6 +98,7 @@ type QueryResolver interface {
 	Reviews(ctx context.Context) ([]*model.Review, error)
 	MovieByID(ctx context.Context, id *string) ([]*model.Movie, error)
 	MovieByGenre(ctx context.Context, genre *string) ([]*model.Movie, error)
+	MovieByYear(ctx context.Context, releaseDate *int) ([]*model.Movie, error)
 }
 
 type executableSchema struct {
@@ -260,6 +262,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.MovieByID(childComplexity, args["id"].(*string)), true
+
+	case "Query.movieByYear":
+		if e.complexity.Query.MovieByYear == nil {
+			break
+		}
+
+		args, err := ec.field_Query_movieByYear_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MovieByYear(childComplexity, args["releaseDate"].(*int)), true
 
 	case "Query.movies":
 		if e.complexity.Query.Movies == nil {
@@ -466,6 +480,7 @@ type Query {
   reviews: [Review!]!
   movieById(id: ID): [Movie!]
   movieByGenre(genre: String): [Movie!]
+  movieByYear(releaseDate: Int): [Movie!]
 }
 `, BuiltIn: false},
 }
@@ -592,6 +607,21 @@ func (ec *executionContext) field_Query_movieById_args(ctx context.Context, rawA
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_movieByYear_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *int
+	if tmp, ok := rawArgs["releaseDate"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("releaseDate"))
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["releaseDate"] = arg0
 	return args, nil
 }
 
@@ -1293,6 +1323,45 @@ func (ec *executionContext) _Query_movieByGenre(ctx context.Context, field graph
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().MovieByGenre(rctx, args["genre"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Movie)
+	fc.Result = res
+	return ec.marshalOMovie2ᚕᚖgithubᚗcomᚋVanCoppenolleWoutᚋGoBackendᚋgraphᚋmodelᚐMovieᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_movieByYear(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_movieByYear_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MovieByYear(rctx, args["releaseDate"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3294,6 +3363,26 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "movieByYear":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_movieByYear(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "__type":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -4353,6 +4442,22 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 		return graphql.Null
 	}
 	res := graphql.MarshalID(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalInt(*v)
 	return res
 }
 

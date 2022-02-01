@@ -93,7 +93,6 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input model.Refresh
 
 func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
 	var resultMovies []*model.Movie
-	//var dbMovies []movies.Movie
 	var dbMovies []movies.Movie = movies.GetAll()
 	for _, movie := range dbMovies {
 		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
@@ -116,7 +115,6 @@ func (r *queryResolver) Reviews(ctx context.Context) ([]*model.Review, error) {
 
 func (r *queryResolver) MovieByID(ctx context.Context, id *string) ([]*model.Movie, error) {
 	var resultMovies []*model.Movie
-	//var dbMovies []movies.Movie
 	var dbMovies []movies.Movie = movies.GetMovieById(id)
 	for _, movie := range dbMovies {
 		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
@@ -126,8 +124,16 @@ func (r *queryResolver) MovieByID(ctx context.Context, id *string) ([]*model.Mov
 
 func (r *queryResolver) MovieByGenre(ctx context.Context, genre *string) ([]*model.Movie, error) {
 	var resultMovies []*model.Movie
-	//var dbMovies []movies.Movie
 	var dbMovies []movies.Movie = movies.GetMoviesByGenre(genre)
+	for _, movie := range dbMovies {
+		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
+	}
+	return resultMovies, nil
+}
+
+func (r *queryResolver) MovieByYear(ctx context.Context, releaseDate *int) ([]*model.Movie, error) {
+	var resultMovies []*model.Movie
+	var dbMovies []movies.Movie = movies.GetMoviesByYear(releaseDate)
 	for _, movie := range dbMovies {
 		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
 	}
