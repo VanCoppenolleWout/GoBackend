@@ -124,6 +124,16 @@ func (r *queryResolver) MovieByID(ctx context.Context, id *string) ([]*model.Mov
 	return resultMovies, nil
 }
 
+func (r *queryResolver) MovieByGenre(ctx context.Context, genre *string) ([]*model.Movie, error) {
+	var resultMovies []*model.Movie
+	//var dbMovies []movies.Movie
+	var dbMovies []movies.Movie = movies.GetMoviesByGenre(genre)
+	for _, movie := range dbMovies {
+		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
+	}
+	return resultMovies, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

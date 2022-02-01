@@ -90,3 +90,29 @@ func GetMovieById(id *string) []Movie {
 	}
 	return movies
 }
+
+func GetMoviesByGenre(genre *string) []Movie {
+	statement, err := database.Db.Prepare("SELECT * FROM Movies WHERE Genre = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer statement.Close()
+	rows, err := statement.Query(genre)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	var movies []Movie
+	for rows.Next() {
+		var movie Movie
+		err := rows.Scan(&movie.ID, &movie.Title, &movie.Description, &movie.Genre, &movie.ImgUrl, &movie.ReleaseDate, &movie.Length, &movie.Likes, &movie.Comments)
+		if err != nil {
+			log.Fatal(err)
+		}
+		movies = append(movies, movie)
+	}
+	if err = rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return movies
+}

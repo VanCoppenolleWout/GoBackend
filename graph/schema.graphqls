@@ -68,4 +68,5 @@ type Query {
   movies: [Movie!]!
   reviews: [Review!]!
   movieById(id: ID): [Movie!]
+  movieByGenre(genre: String): [Movie!]
 }

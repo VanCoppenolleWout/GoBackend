@@ -64,9 +64,10 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		MovieByID func(childComplexity int, id *string) int
-		Movies    func(childComplexity int) int
-		Reviews   func(childComplexity int) int
+		MovieByGenre func(childComplexity int, genre *string) int
+		MovieByID    func(childComplexity int, id *string) int
+		Movies       func(childComplexity int) int
+		Reviews      func(childComplexity int) int
 	}
 
 	Review struct {
@@ -95,6 +96,7 @@ type QueryResolver interface {
 	Movies(ctx context.Context) ([]*model.Movie, error)
 	Reviews(ctx context.Context) ([]*model.Review, error)
 	MovieByID(ctx context.Context, id *string) ([]*model.Movie, error)
+	MovieByGenre(ctx context.Context, genre *string) ([]*model.Movie, error)
 }
 
 type executableSchema struct {
@@ -234,6 +236,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RefreshToken(childComplexity, args["input"].(model.RefreshTokenInput)), true
+
+	case "Query.movieByGenre":
+		if e.complexity.Query.MovieByGenre == nil {
+			break
+		}
+
+		args, err := ec.field_Query_movieByGenre_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MovieByGenre(childComplexity, args["genre"].(*string)), true
 
 	case "Query.movieById":
 		if e.complexity.Query.MovieByID == nil {
@@ -451,6 +465,7 @@ type Query {
   movies: [Movie!]!
   reviews: [Review!]!
   movieById(id: ID): [Movie!]
+  movieByGenre(genre: String): [Movie!]
 }
 `, BuiltIn: false},
 }
@@ -547,6 +562,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_movieByGenre_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["genre"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("genre"))
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["genre"] = arg0
 	return args, nil
 }
 
@@ -1224,6 +1254,45 @@ func (ec *executionContext) _Query_movieById(ctx context.Context, field graphql.
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().MovieByID(rctx, args["id"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Movie)
+	fc.Result = res
+	return ec.marshalOMovie2ᚕᚖgithubᚗcomᚋVanCoppenolleWoutᚋGoBackendᚋgraphᚋmodelᚐMovieᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_movieByGenre(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_movieByGenre_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MovieByGenre(rctx, args["genre"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3195,6 +3264,26 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_movieById(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "movieByGenre":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_movieByGenre(ctx, field)
 				return res
 			}
 
