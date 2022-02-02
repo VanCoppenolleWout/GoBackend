@@ -19,6 +19,7 @@ RUN go mod download
 
 COPY . . 
 
+
 RUN go build -o /GoBackend
 
 EXPOSE 8080

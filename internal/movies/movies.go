@@ -142,3 +142,29 @@ func GetMoviesByYear(year *int) []Movie {
 	}
 	return movies
 }
+
+func UpdateMovieLike(id *string) []Movie {
+	statement, err := database.Db.Prepare("UPDATE Movies SET Likes = Likes + 1 WHERE ID = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer statement.Close()
+	rows, err := statement.Query(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	var movies []Movie
+	for rows.Next() {
+		var movie Movie
+		err := rows.Scan(&movie.ID, &movie.Title, &movie.Description, &movie.Genre, &movie.ImgUrl, &movie.ReleaseDate, &movie.Length, &movie.Likes, &movie.Comments)
+		if err != nil {
+			log.Fatal(err)
+		}
+		movies = append(movies, movie)
+	}
+	if err = rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return movies
+ }

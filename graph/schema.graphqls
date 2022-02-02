@@ -70,4 +70,6 @@ type Query {
   movieById(id: ID): [Movie!]
   movieByGenre(genre: String): [Movie!]
   movieByYear(releaseDate: Int): [Movie!]
+  updateMovieLike(id: ID): [Movie!]
+  updateReviewLike(id: ID): [Review!]
 }

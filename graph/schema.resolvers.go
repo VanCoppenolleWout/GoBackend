@@ -64,6 +64,16 @@ func (r *mutationResolver) CreateReview(ctx context.Context, input model.ReviewI
 	return &model.Review{ID: strconv.FormatInt(reviewId, 10), Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments, User: graphqlUser}, nil
 }
 
+func (r *queryResolver) UpdateReviewLike(ctx context.Context, id *string) ([]*model.Review, error) {
+	var resultReviews []*model.Review
+
+	var dbReviews []reviews.Review = reviews.UpdateReviewLike(id)
+	for _, review := range dbReviews {
+		resultReviews = append(resultReviews, &model.Review{ID: review.ID, Review: review.Review, Date: review.Date, Likes: review.Likes, Comments: review.Comments})
+	}
+	return resultReviews, nil
+}
+
 func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
 	var user users.User
 	user.Username = input.Username
@@ -134,6 +144,15 @@ func (r *queryResolver) MovieByGenre(ctx context.Context, genre *string) ([]*mod
 func (r *queryResolver) MovieByYear(ctx context.Context, releaseDate *int) ([]*model.Movie, error) {
 	var resultMovies []*model.Movie
 	var dbMovies []movies.Movie = movies.GetMoviesByYear(releaseDate)
+	for _, movie := range dbMovies {
+		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
+	}
+	return resultMovies, nil
+}
+
+func (r *queryResolver) UpdateMovieLike(ctx context.Context, id *string) ([]*model.Movie, error) {
+	var resultMovies []*model.Movie
+	var dbMovies []movies.Movie = movies.UpdateMovieLike(id)
 	for _, movie := range dbMovies {
 		resultMovies = append(resultMovies, &model.Movie{ID: movie.ID, Title: movie.Title, Genre: movie.Genre, ImgURL: movie.ImgUrl, Description: movie.Description, ReleaseDate: movie.ReleaseDate, Length: movie.Length, Likes: movie.Likes, Comments: movie.Comments})
 	}

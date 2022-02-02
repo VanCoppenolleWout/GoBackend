@@ -64,11 +64,13 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		MovieByGenre func(childComplexity int, genre *string) int
-		MovieByID    func(childComplexity int, id *string) int
-		MovieByYear  func(childComplexity int, releaseDate *int) int
-		Movies       func(childComplexity int) int
-		Reviews      func(childComplexity int) int
+		MovieByGenre     func(childComplexity int, genre *string) int
+		MovieByID        func(childComplexity int, id *string) int
+		MovieByYear      func(childComplexity int, releaseDate *int) int
+		Movies           func(childComplexity int) int
+		Reviews          func(childComplexity int) int
+		UpdateMovieLike  func(childComplexity int, id *string) int
+		UpdateReviewLike func(childComplexity int, id *string) int
 	}
 
 	Review struct {
@@ -99,6 +101,8 @@ type QueryResolver interface {
 	MovieByID(ctx context.Context, id *string) ([]*model.Movie, error)
 	MovieByGenre(ctx context.Context, genre *string) ([]*model.Movie, error)
 	MovieByYear(ctx context.Context, releaseDate *int) ([]*model.Movie, error)
+	UpdateMovieLike(ctx context.Context, id *string) ([]*model.Movie, error)
+	UpdateReviewLike(ctx context.Context, id *string) ([]*model.Review, error)
 }
 
 type executableSchema struct {
@@ -288,6 +292,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Reviews(childComplexity), true
+
+	case "Query.updateMovieLike":
+		if e.complexity.Query.UpdateMovieLike == nil {
+			break
+		}
+
+		args, err := ec.field_Query_updateMovieLike_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UpdateMovieLike(childComplexity, args["id"].(*string)), true
+
+	case "Query.updateReviewLike":
+		if e.complexity.Query.UpdateReviewLike == nil {
+			break
+		}
+
+		args, err := ec.field_Query_updateReviewLike_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UpdateReviewLike(childComplexity, args["id"].(*string)), true
 
 	case "Review.comments":
 		if e.complexity.Review.Comments == nil {
@@ -481,6 +509,8 @@ type Query {
   movieById(id: ID): [Movie!]
   movieByGenre(genre: String): [Movie!]
   movieByYear(releaseDate: Int): [Movie!]
+  updateMovieLike(id: ID): [Movie!]
+  updateReviewLike(id: ID): [Review!]
 }
 `, BuiltIn: false},
 }
@@ -622,6 +652,36 @@ func (ec *executionContext) field_Query_movieByYear_args(ctx context.Context, ra
 		}
 	}
 	args["releaseDate"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_updateMovieLike_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_updateReviewLike_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -1373,6 +1433,84 @@ func (ec *executionContext) _Query_movieByYear(ctx context.Context, field graphq
 	res := resTmp.([]*model.Movie)
 	fc.Result = res
 	return ec.marshalOMovie2ᚕᚖgithubᚗcomᚋVanCoppenolleWoutᚋGoBackendᚋgraphᚋmodelᚐMovieᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_updateMovieLike(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_updateMovieLike_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UpdateMovieLike(rctx, args["id"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Movie)
+	fc.Result = res
+	return ec.marshalOMovie2ᚕᚖgithubᚗcomᚋVanCoppenolleWoutᚋGoBackendᚋgraphᚋmodelᚐMovieᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_updateReviewLike(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_updateReviewLike_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UpdateReviewLike(rctx, args["id"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Review)
+	fc.Result = res
+	return ec.marshalOReview2ᚕᚖgithubᚗcomᚋVanCoppenolleWoutᚋGoBackendᚋgraphᚋmodelᚐReviewᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3383,6 +3521,46 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "updateMovieLike":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_updateMovieLike(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "updateReviewLike":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_updateReviewLike(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "__type":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -4489,6 +4667,53 @@ func (ec *executionContext) marshalOMovie2ᚕᚖgithubᚗcomᚋVanCoppenolleWout
 				defer wg.Done()
 			}
 			ret[i] = ec.marshalNMovie2ᚖgithubᚗcomᚋVanCoppenolleWoutᚋGoBackendᚋgraphᚋmodelᚐMovie(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalOReview2ᚕᚖgithubᚗcomᚋVanCoppenolleWoutᚋGoBackendᚋgraphᚋmodelᚐReviewᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Review) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNReview2ᚖgithubᚗcomᚋVanCoppenolleWoutᚋGoBackendᚋgraphᚋmodelᚐReview(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)

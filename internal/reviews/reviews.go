@@ -67,3 +67,30 @@ func GetAll() []Review {
 	}
 	return reviews
 }
+
+
+func UpdateReviewLike(id *string) []Review {
+	statement, err := database.Db.Prepare("UPDATE Reviews SET Likes = Likes + 1 WHERE ID = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer statement.Close()
+	rows, err := statement.Query(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	var reviews []Review
+	for rows.Next() {
+		var review Review
+		err := rows.Scan(&review.ID, &review.Review, &review.Date, &review.Likes, &review.Comments, &review.User.ID)
+		if err != nil {
+			log.Fatal(err)
+		}
+		reviews = append(reviews, review)
+	}
+	if err = rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return reviews
+ }
